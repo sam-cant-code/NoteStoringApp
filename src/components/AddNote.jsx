@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import DeleteIcon from '../ReactIcons/deleteIcon.png';
+import DeleteIcon from '../reactIcons/deleteIcon.png';
 
 const AddNote = ({ id, onSave, onDelete, initialTitle = '', initialText = '' }) => {
   const [title, setTitle] = useState(initialTitle);
