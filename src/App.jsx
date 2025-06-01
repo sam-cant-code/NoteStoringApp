@@ -1,44 +1,27 @@
 import NoteList from './components/NoteList'
 import Navbar from './components/Navbar'
+import SearchBar from './components/SearchBar'
+
 import { useState } from 'react'
 import { nanoid } from 'nanoid'
 
-const handleAddNote = () => {
-  // Prevent adding if any note is in editing mode
-  if (notes.some(note => note.isEditing)) return;
-  setNotes([
-    ...notes,
-    {
-      id: nanoid(),
-      title: "",
-      text: "",
-      createdAt: Date.now(), // Only use createdAt
-      isEditing: true,
-    }
-  ]);
-};
-const getTodayDate = () => {
-  const today = new Date();
-  return `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
-};
-
 function App() {
-  const [notes, setNotes] = useState([]); // Start with no notes
+  const [notes, setNotes] = useState([]);
 
   const handleAddNote = () => {
-  // Prevent adding if any note is in editing mode
-  if (notes.some(note => note.isEditing)) return;
-  setNotes([
-  ...notes,
-  {
-    id: nanoid(),
-    title: "",
-    text: "",
-    createdAt: Date.now(), // <-- use createdAt, not date
-    isEditing: true,
-  }
-]);
-};
+    if (notes.some(note => note.isEditing)) return;
+    setNotes([
+      ...notes,
+      {
+        id: nanoid(),
+        title: "",
+        text: "",
+        createdAt: Date.now(),
+        isEditing: true,
+        pinned: false
+      }
+    ]);
+  };
 
   const handleSaveNote = (id, title, text) => {
     setNotes(notes =>
@@ -63,6 +46,7 @@ function App() {
       )
     );
   };
+
   const handlePinNote = (id) => {
     setNotes(notes =>
       notes.map(note =>
@@ -70,17 +54,22 @@ function App() {
       )
     );
   };
+
+  // Sort notes: pinned first, then by creation date
   const sortedNotes = [
     ...notes.filter(note => note.pinned),
     ...notes.filter(note => !note.pinned)
   ];
 
+  const [searchText, setSearchText] = useState('')
 
+  
   return (
     <div>
       <Navbar/>
+      <SearchBar/>
       <NoteList
-        notes={notes}
+        notes={sortedNotes}
         onSaveNote={handleSaveNote}
         onDeleteNote={handleDeleteNote}
         onEditNote={handleEditNote}

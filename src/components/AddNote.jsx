@@ -6,18 +6,18 @@ const AddNote = ({ id, onSave, onDelete, initialTitle = '', initialText = '' }) 
     const [text, setText] = useState(initialText);
 
     return (
-        <div className="add-note bg-yellow-100 rounded-lg p-4 shadow-md flex flex-col justify-between w-64 max-w-xs min-h-[150px]">
+        <div className="note bg-yellow-200 rounded-lg p-3 shadow-lg flex flex-col justify-between w-64 min-h-[120px]">
             <input
                 type="text"
-                className="rounded-md p-2 mb-1 bg-yellow-100 text-gray-800 focus:outline-none"
+                className="rounded-md p-2 mb-0.5 bg-yellow-200 text-gray-800 focus:outline-none"
                 placeholder="Enter Title..."
                 maxLength={50}
                 value={title}
                 onChange={e => setTitle(e.target.value)}
             />
             <textarea
-                rows="3"
-                className="resize-none rounded-md p-2 mb-0.5 bg-yellow-100 text-gray-800 focus:outline-none"
+                rows="2"
+                className="resize-none rounded-md p-2 mb-1 bg-yellow-200 text-gray-800 focus:outline-none"
                 placeholder="Enter note content..."
                 maxLength={200}
                 value={text}
@@ -36,7 +36,7 @@ const AddNote = ({ id, onSave, onDelete, initialTitle = '', initialText = '' }) 
                     <img
                         src={DeleteIcon}
                         alt="DeleteButton"
-                        className="w-5 h-5 cursor-pointer hover:scale-110 transition-transform"
+                        className="w-4 h-4 cursor-pointer hover:scale-110 transition-transform"
                         onClick={() => onDelete(id)}
                         title="Delete"
                     />
