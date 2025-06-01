@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import PinIcon from '../ReactIcons/pinIcon.png';
-import PinIconFilled from '../ReactIcons/pinIconFilled.png';
-import DeleteIcon from '../ReactIcons/deleteIcon.png';
-import EditIcon from '../ReactIcons/editIcon.png';
+import PinIcon from '../reactIcons/pinIcon.png';
+import PinIconFilled from '../reactIcons/pinIconFilled.png';
+import DeleteIcon from '../reactIcons/deleteIcon.png';
+import EditIcon from '../reactIcons/editIcon.png';
 import EditNote from './EditNote';
 
 const Note = ({ id, title, text, createdAt, onDelete, onEdit, pinned, onPin }) => {
