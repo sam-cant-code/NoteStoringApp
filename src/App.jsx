@@ -1,12 +1,12 @@
-import NoteList from './components/NoteList'
-import Navbar from './components/Navbar'
-import SearchBar from './components/SearchBar'
-
-import { useState } from 'react'
-import { nanoid } from 'nanoid'
+import { useState } from 'react';
+import { nanoid } from 'nanoid';
+import Navbar from './components/Navbar';
+import SearchBar from './components/SearchBar';
+import NoteList from './components/NoteList';
 
 function App() {
   const [notes, setNotes] = useState([]);
+  const [search, setSearch] = useState("");
 
   const handleAddNote = () => {
     if (notes.some(note => note.isEditing)) return;
@@ -24,61 +24,45 @@ function App() {
   };
 
   const handleSaveNote = (id, title, text) => {
-    setNotes(notes =>
-      notes.map(note =>
-        note.id === id
-          ? { ...note, title, text, isEditing: false }
-          : note
-      )
-    );
+    setNotes(notes.map(note =>
+      note.id === id ? { ...note, title, text, isEditing: false } : note
+    ));
   };
 
-  const handleDeleteNote = (id) => {
-    setNotes(notes => notes.filter(note => note.id !== id));
+  const handleDeleteNote = id => {
+    setNotes(notes.filter(note => note.id !== id));
   };
 
-  const handleEditNote = (id) => {
-    setNotes(notes =>
-      notes.map(note =>
-        note.id === id
-          ? { ...note, isEditing: true }
-          : note
-      )
-    );
+  const handleEditNote = id => {
+    setNotes(notes.map(note =>
+      note.id === id ? { ...note, isEditing: true } : note
+    ));
   };
 
-  const handlePinNote = (id) => {
-    setNotes(notes =>
-      notes.map(note =>
-        note.id === id ? { ...note, pinned: !note.pinned } : note
-      )
-    );
+  const handlePinNote = id => {
+    setNotes(notes.map(note =>
+      note.id === id ? { ...note, pinned: !note.pinned } : note
+    ));
   };
 
-  // Sort notes: pinned first, then by creation date
-  const sortedNotes = [
-    ...notes.filter(note => note.pinned),
-    ...notes.filter(note => !note.pinned)
-  ];
+  // Filter notes by title (case-insensitive)
+  const filteredNotes = notes.filter(note =>
+    note.title.toLowerCase().includes(search.toLowerCase())
+  );
 
-  const [searchText, setSearchText] = useState('')
-
-  
   return (
     <div>
-      <Navbar/>
-      <SearchBar/>
+      <Navbar />
+      <SearchBar value={search} onChange={setSearch} />
       <NoteList
-        notes={sortedNotes}
+        notes={filteredNotes}
         onSaveNote={handleSaveNote}
         onDeleteNote={handleDeleteNote}
         onEditNote={handleEditNote}
         onPinNote={handlePinNote}
       />
       <button
-        className={`group mb-[5px] fixed bottom-6 right-6 bg-yellow-400 hover:bg-yellow-500 text-white font-bold rounded-full w-14 h-14 shadow-lg text-3xl flex items-center justify-center transition-all duration-300 z-50
-                    hover:scale-110 hover:shadow-2xl 
-                    ${notes.length === 0 ? "animate-pulse ring-4 ring-yellow-300/70" : ""}`}
+        className="group mb-[5px] fixed bottom-6 right-6 bg-yellow-400 hover:bg-yellow-500 text-white font-bold rounded-full w-14 h-14 shadow-lg text-3xl flex items-center justify-center transition-all duration-300 z-50 hover:scale-110 hover:shadow-2xl"
         onClick={handleAddNote}
         aria-label="Add Note"
       >
@@ -87,7 +71,7 @@ function App() {
         </span>
       </button>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
