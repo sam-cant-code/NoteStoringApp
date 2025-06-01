@@ -18,15 +18,17 @@ function App() {
         text: "",
         createdAt: Date.now(),
         isEditing: true,
-        pinned: false
-      }
+        pinned: false,
+      },
     ]);
   };
 
   const handleSaveNote = (id, title, text) => {
-    setNotes(notes.map(note =>
-      note.id === id ? { ...note, title, text, isEditing: false } : note
-    ));
+    setNotes(
+      notes.map(note =>
+        note.id === id ? { ...note, title, text, isEditing: false } : note
+      )
+    );
   };
 
   const handleDeleteNote = id => {
@@ -34,18 +36,22 @@ function App() {
   };
 
   const handleEditNote = id => {
-    setNotes(notes.map(note =>
-      note.id === id ? { ...note, isEditing: true } : note
-    ));
+    setNotes(
+      notes.map(note =>
+        note.id === id ? { ...note, isEditing: true } : note
+      )
+    );
   };
 
   const handlePinNote = id => {
-    setNotes(notes.map(note =>
-      note.id === id ? { ...note, pinned: !note.pinned } : note
-    ));
+    setNotes(
+      notes.map(note =>
+        note.id === id ? { ...note, pinned: !note.pinned } : note
+      )
+    );
   };
 
-  // Filter notes by title (case-insensitive)
+  // Filter notes by search query
   const filteredNotes = notes.filter(note =>
     note.title.toLowerCase().includes(search.toLowerCase())
   );
@@ -62,14 +68,14 @@ function App() {
         onPinNote={handlePinNote}
       />
       <button
-        className="group mb-[5px] fixed bottom-6 right-6 bg-yellow-400 hover:bg-yellow-500 text-white font-bold rounded-full w-14 h-14 shadow-lg text-3xl flex items-center justify-center transition-all duration-300 z-50 hover:scale-110 hover:shadow-2xl"
-        onClick={handleAddNote}
-        aria-label="Add Note"
-      >
-        <span className="inline-block transition-transform duration-300 ease-in-out group-hover:rotate-45">
-          +
-        </span>
-      </button>
+  className="group fixed bottom-6 right-6 bg-yellow-400 hover:bg-yellow-500 text-white font-bold rounded-full w-14 h-14 shadow-lg text-3xl flex items-center justify-center transition-all duration-300 z-50 hover:-translate-x-2 hover:scale-110 hover:shadow-2xl"
+  onClick={handleAddNote}
+  aria-label="Add Note"
+>
+  <span className="-translate-y-0.75 :inline-block transition-transform duration-300 ease-in-out group-hover:rotate-90 origin-center">
+    +
+  </span>
+</button>
     </div>
   );
 }

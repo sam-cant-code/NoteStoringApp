@@ -4,20 +4,6 @@ import PinIconFilled from '../ReactIcons/pinIconFilled.png';
 import DeleteIcon from '../ReactIcons/deleteIcon.png';
 import EditIcon from '../ReactIcons/editIcon.png';
 
-function formatTimeAgo(createdAt) {
-  const now = Date.now();
-  const diff = now - createdAt;
-  const seconds = Math.floor(diff / 1000);
-  const minutes = Math.floor(diff / (1000 * 60));
-  const hours = Math.floor(diff / (1000 * 60 * 60));
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-  if (seconds < 60) return "just now";
-  if (minutes < 60) return `${minutes} minute${minutes === 1 ? '' : 's'} ago`;
-  if (hours < 24) return `${hours} hour${hours === 1 ? '' : 's'} ago`;
-  return `${days} day${days === 1 ? '' : 's'} ago`;
-}
-
 const Note = ({ id, title, text, createdAt, onDelete, onEdit, pinned, onPin }) => {
   const [, setNow] = useState(Date.now());
 
@@ -27,7 +13,7 @@ const Note = ({ id, title, text, createdAt, onDelete, onEdit, pinned, onPin }) =
   }, []);
 
   return (
-    <div className="note bg-yellow-200 rounded-lg p-6 shadow-lg flex flex-col justify-between w-64 min-h-[120px]">
+    <div className="note bg-yellow-200 rounded-lg p-3 shadow-lg flex flex-col justify-between w-64 min-h-[120px]">
       <h3 className="note-text mb-0.5 break-words overflow-hidden font-medium text-center">
         {title}
       </h3>
@@ -35,7 +21,7 @@ const Note = ({ id, title, text, createdAt, onDelete, onEdit, pinned, onPin }) =
         {text}
       </span>
       <div className="footer flex items-center justify-between">
-        <small>{formatTimeAgo(createdAt)}</small>
+        <small>{new Date(createdAt).toLocaleString()}</small>
         <div className="flex gap-2">
           <img
             src={pinned ? PinIconFilled : PinIcon}
