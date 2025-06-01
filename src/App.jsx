@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid';
 import Navbar from './components/Navbar';
 import SearchBar from './components/SearchBar';
 import NoteList from './components/NoteList';
-import SortIcon from './ReactIcons/sortIcon.png';
+import SortIcon from './reactIcons/sortIcon.png';
 
 function App() {
   // Initialize state with data from localStorage or defaults
