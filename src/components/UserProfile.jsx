@@ -41,7 +41,7 @@ const UserProfile = () => {
         <img 
           src={photoURL || defaultAvatar}
           alt="Profile" 
-          className="w-10 h-10 rounded-full border-2 border-yellow-400 shadow-md"
+          className="w-10 h-10 rounded-full border-2 border-yellow-400 shadow-md transition-transform duration-200 hover:scale-110 hover:border-yellow-500 hover:shadow-lg"
           onError={(e) => {
             e.target.src = defaultAvatar;
           }}
@@ -49,7 +49,7 @@ const UserProfile = () => {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
+        <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50 animate-fade-in">
           <div className="px-4 py-2 border-b border-gray-100">
             <p className="text-sm font-semibold text-gray-700">
               {auth.currentUser?.displayName || 'User'}
@@ -66,6 +66,18 @@ const UserProfile = () => {
           </button>
         </div>
       )}
+
+      <style>
+        {`
+          @keyframes fade-in {
+            from { opacity: 0; transform: translateY(10px);}
+            to { opacity: 1; transform: translateY(0);}
+          }
+          .animate-fade-in {
+            animation: fade-in 0.25s ease;
+          }
+        `}
+      </style>
     </div>
   );
 };

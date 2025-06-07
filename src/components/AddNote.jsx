@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import DeleteIcon from '../reactIcons/deleteIcon.png';
+import { motion } from 'framer-motion';
+
 
 const AddNote = ({ id, onSave, onDelete, initialTitle = '', initialText = '' }) => {
   const [title, setTitle] = useState(initialTitle);
@@ -12,14 +14,16 @@ const AddNote = ({ id, onSave, onDelete, initialTitle = '', initialText = '' }) 
   }, []);
 
   const handleBlur = (e) => {
-    if (!noteRef.current.contains(e.relatedTarget)) {
-      if (title.trim() || text.trim()) {
-        onSave(id, title, text);
-      } else {
-        onDelete(id);
-      }
+  if (!noteRef.current.contains(e.relatedTarget)) {
+    if (title.trim() || text.trim()) {
+      const finalTitle = title.trim() ? title : 'Untitled Note';
+      onSave(id, finalTitle, text);
+    } else {
+      onDelete(id);
     }
-  };
+  }
+};
+
 
   return (
     <div 
@@ -28,13 +32,13 @@ const AddNote = ({ id, onSave, onDelete, initialTitle = '', initialText = '' }) 
     >
       <div
         ref={noteRef}
-        className="bg-yellow-200 rounded-lg p-6 shadow-2xl w-[90%] max-w-2xl transform transition-all"
+        className="bg-white rounded-lg p-6 shadow-2xl w-[90%] max-w-2xl transform transition-all"
         onClick={e => e.stopPropagation()}
       >
         <input
           type="text"
           ref={titleInputRef}
-          className="w-full text-2xl font-bold mb-4 bg-yellow-100 rounded p-2 focus:outline-none"
+          className="w-full text-2xl font-bold mb-4 bg-white rounded p-2 focus:outline-none"
           placeholder="Enter Title..."
           maxLength={50}
           value={title}
@@ -42,7 +46,7 @@ const AddNote = ({ id, onSave, onDelete, initialTitle = '', initialText = '' }) 
         />
         <textarea
           rows="8"
-          className="w-full text-lg mb-6 bg-yellow-100 rounded p-2 focus:outline-none resize-none"
+          className="w-full text-lg mb-6 bg-white rounded p-2 focus:outline-none resize-none"
           placeholder="Enter note content..."
           maxLength={200}
           value={text}

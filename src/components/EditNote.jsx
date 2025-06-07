@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
+import DeleteIcon from '../reactIcons/deleteIcon.png';
 
-const EditNote = ({ id, initialTitle, initialText, onSave, onCancel }) => {
+const EditNote = ({ id, initialTitle, initialText, onSave, onDelete }) => {
   const [title, setTitle] = useState(initialTitle);
   const [text, setText] = useState(initialText);
   const titleInputRef = useRef(null);
@@ -9,19 +10,28 @@ const EditNote = ({ id, initialTitle, initialText, onSave, onCancel }) => {
     titleInputRef.current?.focus();
   }, []);
 
+  const handleSave = (e) => {
+    e.preventDefault();
+    if (title.trim() === "" && text.trim() === "") return;
+    onSave(id, title, text);
+  };
+
   return (
-    <div className="w-full">
+    <form
+      className="w-full bg-white rounded-xl p-5 shadow-lg flex flex-col gap-3 border border-yellow-200"
+      onSubmit={handleSave}
+    >
       <input
         ref={titleInputRef}
         type="text"
-        className="w-full text-2xl font-bold mb-4 bg-yellow-100 rounded p-2 focus:outline-none"
+        className="w-full text-2xl font-bold mb-4 bg-white rounded p-2 focus:outline-none"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Enter title..."
         maxLength={50}
       />
       <textarea
-        className="w-full text-lg mb-6 bg-yellow-100 rounded p-2 min-h-[200px] focus:outline-none resize-none"
+        className="w-full text-lg mb-6 bg-white rounded p-2 min-h-[200px] focus:outline-none resize-none"
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="Enter note content..."
@@ -29,19 +39,21 @@ const EditNote = ({ id, initialTitle, initialText, onSave, onCancel }) => {
       />
       <div className="flex justify-end gap-2">
         <button
-          className="px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg transition-colors"
-          onClick={() => onSave(id, title, text)}
+          type="submit"
+          className="px-5 py-2 bg-yellow-400 hover:bg-yellow-500 text-white font-semibold rounded-lg transition-colors shadow"
         >
-          Save
+          Save Changes
         </button>
         <button
-          className="px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg transition-colors"
-          onClick={onCancel}
+          type="button"
+          className="p-2 bg-transparent hover:bg-red-100 rounded-lg transition-colors shadow"
+          onClick={() => onDelete(id)}
+          title="Delete"
         >
-          Cancel
+          <img src={DeleteIcon} alt="Delete" className="w-6 h-6" />
         </button>
       </div>
-    </div>
+    </form>
   );
 };
 
