@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
-import { collection, query, where, onSnapshot, addDoc, updateDoc, deleteDoc, doc, orderBy } from 'firebase/firestore';
+import {
+  collection, query, where, onSnapshot, addDoc,
+  updateDoc, deleteDoc, doc, orderBy
+} from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../firebase';
 import Navbar from '../components/Navbar';
@@ -21,7 +24,7 @@ function NotesPage() {
 
     const notesRef = collection(db, 'notes');
     const q = query(
-      notesRef, 
+      notesRef,
       where('userId', '==', auth.currentUser.uid),
       orderBy('createdAt', 'desc')
     );
@@ -105,14 +108,14 @@ function NotesPage() {
   };
 
   const sortedAndFilteredNotes = [...notes]
-    .filter(note => 
+    .filter(note =>
       note.title.toLowerCase().includes(search.toLowerCase()) ||
       note.text.toLowerCase().includes(search.toLowerCase())
     )
     .sort((a, b) => {
       if (a.pinned !== b.pinned) return b.pinned - a.pinned;
-      return sortOrder === "newest" 
-        ? b.createdAt - a.createdAt 
+      return sortOrder === "newest"
+        ? b.createdAt - a.createdAt
         : a.createdAt - b.createdAt;
     });
 
@@ -125,33 +128,27 @@ function NotesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-100 via-yellow-200 to-yellow-300">
+    <div className="min-h-screen overflow-x-hidden bg-gradient-to-br from-yellow-100 via-yellow-200 to-yellow-300">
       <Navbar search={search} setSearch={setSearch} />
-      <div className="max-w-7xl mx-auto px-4">
-        {/* Sort Row */}
-        <div className="flex flex-row items-center gap-4 pt-8 pb-4">
-          <div 
-            onClick={toggleSort}
-            className="flex items-center gap-2 cursor-pointer hover:bg-yellow-100 rounded-full px-5 py-1.5 transition-colors ml-auto"
-          >
-            <img 
-              src={SortIcon} 
-              alt="Sort" 
-              className="w-5 h-5"
-            />
-            <span className="text-sm text-yellow-700 whitespace-nowrap">
-              Sort by {sortOrder}
-            </span>
-          </div>
-        </div>
-        {/* Page Title */}
-        <div className="py-2">
-          <h1 className="text-2xl font-bold text-yellow-700">
+
+      <div className="max-w-7xl mx-auto px-3 py-2 sm:px-6 sm:py-6">
+
+        {/* Sort Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pt-4 pb-4 gap-3 text-center sm:text-left">
+          <h1 className="text-xl sm:text-2xl font-bold text-yellow-700">
             {auth.currentUser?.displayName?.split(' ')[0] || 'User'}'s Notes
           </h1>
+          <button
+            onClick={toggleSort}
+            className="flex items-center gap-2 bg-white/80 backdrop-blur hover:bg-yellow-100 rounded-full px-4 py-2 transition-colors text-sm shadow-sm"
+          >
+            <img src={SortIcon} alt="Sort" className="w-5 h-5" />
+            <span className="text-yellow-700">Sort by {sortOrder}</span>
+          </button>
         </div>
+
         {/* Notes List */}
-        <div>
+        <div className="pb-24 sm:pb-8">
           <NoteList
             notes={sortedAndFilteredNotes}
             onSaveNote={handleSaveNote}
@@ -160,16 +157,16 @@ function NotesPage() {
             onPinNote={handlePinNote}
           />
         </div>
-        {/* Add Note Button */}
+
+        {/* Floating Add Note Button */}
         <button
-          className="group fixed bottom-6 right-6 bg-white text-black font-bold rounded-full w-14 h-14 shadow-lg text-3xl flex items-center justify-center transition-all duration-300 z-50 hover:-translate-x-2 hover:scale-110 hover:shadow-2xl"
+          className="group fixed bottom-4 right-4 sm:bottom-6 sm:right-6 bg-yellow-400 hover:bg-yellow-500 text-white font-bold rounded-full w-12 h-12 sm:w-16 sm:h-16 shadow-xl text-2xl sm:text-3xl flex items-center justify-center z-50 transition-all duration-300 active:scale-95"
           onClick={handleAddNote}
           aria-label="Add Note"
         >
-          <span className="inline-block transition-transform duration-300 ease-in-out group-hover:rotate-90 origin-center">
-            +
-          </span>
+          <span className="group-hover:rotate-90 transition-transform duration-300 ease-in-out origin-center">+</span>
         </button>
+
       </div>
     </div>
   );
