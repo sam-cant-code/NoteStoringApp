@@ -69,15 +69,11 @@ function AuthPage() {
             loading ? 'opacity-60 cursor-not-allowed' : ''
           }`}
         >
-          <img
-            src="https://www.google.com/favicon.ico"
-            alt="Google"
-            className="w-6 h-6"
-          />
+          
           {loading ? (
             <span className="animate-pulse font-body">Signing in...</span>
           ) : (
-            <span className="font-body">Get Started</span>
+            <span className="font-body">Get Started   {'>'} </span>
           )}
         </button>
       </div>

@@ -5,35 +5,91 @@ import DeleteIcon from '../reactIcons/deleteIcon.png';
 import EditIcon from '../reactIcons/editIcon.png';
 import EditNote from './EditNote';
 
-const Note = ({ id, title, text, createdAt, onDelete, onEdit, pinned, onPin }) => {
+const Note = ({ id, title, text, createdAt, updatedAt, onDelete, onEdit, onCancelEdit, pinned, onPin, isEditing }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditingLocal, setIsEditingLocal] = useState(false);
+
+  // Function to get relative time
+  const getRelativeTime = (timestamp) => {
+    const now = Date.now();
+    const diff = now - timestamp;
+    const minutes = Math.floor(diff / (1000 * 60));
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+    if (minutes < 1) {
+      return 'now';
+    } else if (minutes < 60) {
+      return `${minutes} minute${minutes === 1 ? '' : 's'} ago`;
+    } else if (hours < 24) {
+      return `${hours} hour${hours === 1 ? '' : 's'} ago`;
+    } else {
+      return `${days} day${days === 1 ? '' : 's'} ago`;
+    }
+  };
+
+  // Function to get time display text
+  const getTimeDisplay = () => {
+    if (updatedAt && updatedAt !== createdAt) {
+      return `Edited ${getRelativeTime(updatedAt)}`;
+    } else {
+      return `Created ${getRelativeTime(createdAt)}`;
+    }
+  };
 
   const handleNoteClick = (e) => {
-    // Prevent modal from opening if clicking an icon or if already open
-    if (e.target.tagName === 'IMG' || isModalOpen) return;
+    // Prevent modal from opening if clicking an icon, if already open, or if in database edit mode
+    if (e.target.tagName === 'IMG' || isModalOpen || isEditing) return;
     setIsModalOpen(true);
-    setIsEditing(false);
+    setIsEditingLocal(true); // Automatically go to edit mode
   };
 
   const handleEditClick = (e) => {
     e.stopPropagation();
+    // Don't open local edit if already in database edit mode
+    if (isEditing) return;
+    
     if (!isModalOpen) {
       setIsModalOpen(true);
     }
-    setIsEditing(true);
+    setIsEditingLocal(true);
   };
 
   const handleSave = (id, newTitle, newText) => {
     onEdit(id, newTitle, newText);
-    setIsEditing(false);
+    setIsEditingLocal(false);
     setIsModalOpen(false);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setIsEditing(false);
+    setIsEditingLocal(false);
   };
+
+  const handleCancelEdit = () => {
+    setIsEditingLocal(false);
+  };
+
+  // If the note is in editing mode from database, show EditNote directly
+  if (isEditing) {
+    return (
+      <div className="fixed inset-0 backdrop-blur-md flex items-center justify-center z-50">
+        <div className="bg-white rounded-lg p-6 shadow-2xl w-[90%] max-w-2xl max-h-[80vh] overflow-auto transform transition-all border border-yellow-200">
+          <EditNote
+            id={id}
+            initialTitle={title}
+            initialText={text}
+            onSave={handleSave}
+            onDelete={onDelete}
+            onCancel={() => {
+              // Only reset editing state in database - no modal cleanup needed
+              onCancelEdit(id);
+            }}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -48,7 +104,9 @@ const Note = ({ id, title, text, createdAt, onDelete, onEdit, pinned, onPin }) =
           {text}
         </span>
         <div className="footer flex items-center justify-between mt-2">
-          <small className="text-yellow-600 text-xs">{new Date(createdAt).toLocaleString()}</small>
+          <small className="text-yellow-600 text-xs">
+            {getTimeDisplay()}
+          </small>
           <div className="flex gap-2">
             <img
               src={pinned ? PinIconFilled : PinIcon}
@@ -81,8 +139,8 @@ const Note = ({ id, title, text, createdAt, onDelete, onEdit, pinned, onPin }) =
         </div>
       </div>
 
-      {/* Modal */}
-      {isModalOpen && (
+      {/* Modal - only show if not in database editing mode */}
+      {isModalOpen && !isEditing && (
         <div
           className="fixed inset-0 backdrop-blur-md flex items-center justify-center z-50"
           onClick={handleCloseModal}
@@ -91,20 +149,28 @@ const Note = ({ id, title, text, createdAt, onDelete, onEdit, pinned, onPin }) =
             className="bg-white rounded-lg p-6 shadow-2xl w-[90%] max-w-2xl max-h-[80vh] overflow-auto transform transition-all border border-yellow-200"
             onClick={(e) => e.stopPropagation()}
           >
-            {isEditing ? (
+            {isEditingLocal ? (
               <EditNote
                 id={id}
                 initialTitle={title}
                 initialText={text}
                 onSave={handleSave}
                 onDelete={onDelete}
+                onCancel={() => {
+                  // Close the modal completely when canceling local edit
+                  setIsEditingLocal(false);
+                  setIsModalOpen(false);
+                }}
               />
             ) : (
+              // This view mode is now rarely used since we go directly to edit
               <>
                 <h2 className="text-2xl font-bold mb-4 break-words text-black">{title}</h2>
                 <p className="text-lg mb-6 break-words whitespace-pre-wrap text-black">{text}</p>
                 <div className="flex items-center justify-between">
-                  <small className="text-black">{new Date(createdAt).toLocaleString()}</small>
+                  <small className="text-black">
+                    {getTimeDisplay()}
+                  </small>
                   <div className="flex gap-4 items-center">
                     <img
                       src={pinned ? PinIconFilled : PinIcon}
@@ -117,7 +183,7 @@ const Note = ({ id, title, text, createdAt, onDelete, onEdit, pinned, onPin }) =
                       src={EditIcon}
                       alt="EditIcon"
                       className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform"
-                      onClick={() => setIsEditing(true)}
+                      onClick={() => setIsEditingLocal(true)}
                     />
                     <img
                       src={DeleteIcon}
