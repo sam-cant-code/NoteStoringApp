@@ -8,6 +8,7 @@ import EditNote from './EditNote';
 const Note = ({ id, title, text, createdAt, updatedAt, onDelete, onEdit, onCancelEdit, pinned, onPin, isEditing }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditingLocal, setIsEditingLocal] = useState(false);
+  const [isPinAnimating, setIsPinAnimating] = useState(false);
 
   // Function to get relative time
   const getRelativeTime = (timestamp) => {
@@ -70,6 +71,14 @@ const Note = ({ id, title, text, createdAt, updatedAt, onDelete, onEdit, onCance
     setIsEditingLocal(false);
   };
 
+  const handlePinClick = (e) => {
+    e.stopPropagation();
+    setIsPinAnimating(true);
+    onPin(id);
+    // Reset animation state after animation completes
+    setTimeout(() => setIsPinAnimating(false), 300);
+  };
+
   // If the note is in editing mode from database, show EditNote directly
   if (isEditing) {
     return (
@@ -94,40 +103,56 @@ const Note = ({ id, title, text, createdAt, updatedAt, onDelete, onEdit, onCance
   return (
     <>
       <div
-        className="note bg-white rounded-xl p-4 shadow-lg flex flex-col justify-between w-70 min-h-[180px] max-h-[260px] cursor-pointer hover:shadow-2xl transition-shadow border border-yellow-200"
+        className={`note bg-white rounded-xl p-4 shadow-lg flex flex-col w-full cursor-pointer transition-all duration-300 ease-in-out border ${
+          pinned 
+            ? 'border-yellow-400 bg-gradient-to-br from-yellow-50 to-white shadow-xl transform hover:scale-105 hover:shadow-2xl ring-2 ring-yellow-200 ring-opacity-50' 
+            : 'border-yellow-200 hover:shadow-2xl hover:border-yellow-300 hover:bg-gradient-to-br hover:from-yellow-25 hover:to-white'
+        } ${isPinAnimating ? 'animate-pulse scale-105' : ''}`}
         onClick={handleNoteClick}
       >
-        <h3 className="note-text mb-1 break-words overflow-hidden font-bold text-black text-center text-base leading-tight">
+        <h3 className={`note-text mb-1 break-words overflow-hidden font-bold text-center text-base leading-tight transition-colors duration-200 ${
+          pinned ? 'text-yellow-800' : 'text-black'
+        }`}>
           {title}
         </h3>
-        <span className="note-text mb-2 break-words overflow-hidden text-black text-sm leading-snug line-clamp-5">
+        <span className={`note-text mb-4 break-words text-sm leading-snug whitespace-pre-wrap transition-colors duration-200 ${
+          pinned ? 'text-yellow-700' : 'text-black'
+        }`}>
           {text}
         </span>
-        <div className="footer flex items-center justify-between mt-2">
-          <small className="text-yellow-600 text-xs">
+        <div className="footer flex items-center justify-between mt-auto pt-2">
+          <small className={`text-xs transition-colors duration-200 ${
+            pinned ? 'text-yellow-600 font-medium' : 'text-yellow-600'
+          }`}>
             {getTimeDisplay()}
           </small>
           <div className="flex gap-2">
-            <img
-              src={pinned ? PinIconFilled : PinIcon}
-              alt="PinIcon"
-              className="w-5 h-5 cursor-pointer hover:scale-110 transition-transform"
-              onClick={(e) => {
-                e.stopPropagation();
-                onPin(id);
-              }}
-              title={pinned ? "Unpin" : "Pin"}
-            />
+            <div className="relative">
+              <img
+                src={pinned ? PinIconFilled : PinIcon}
+                alt="PinIcon"
+                className={`w-5 h-5 cursor-pointer transition-all duration-300 ease-in-out ${
+                  pinned 
+                    ? 'scale-110 rotate-12 filter brightness-110 drop-shadow-md hover:scale-125 hover:rotate-[20deg]' 
+                    : 'hover:scale-110 hover:rotate-6'
+                } ${isPinAnimating ? 'animate-bounce scale-125 rotate-12' : ''}`}
+                onClick={handlePinClick}
+                title={pinned ? "Unpin" : "Pin"}
+              />
+              {pinned && (
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full animate-ping"></div>
+              )}
+            </div>
             <img
               src={EditIcon}
               alt="EditIcon"
-              className="w-5 h-5 cursor-pointer hover:scale-110 transition-transform"
+              className="w-5 h-5 cursor-pointer hover:scale-110 transition-transform duration-200"
               onClick={handleEditClick}
             />
             <img
               src={DeleteIcon}
               alt="DeleteButton"
-              className="w-5 h-5 cursor-pointer hover:scale-110 transition-transform"
+              className="w-5 h-5 cursor-pointer hover:scale-110 hover:filter hover:brightness-110 transition-all duration-200"
               onClick={(e) => {
                 e.stopPropagation();
                 if (window.confirm("Are you sure you want to delete this note?")) {
@@ -146,7 +171,9 @@ const Note = ({ id, title, text, createdAt, updatedAt, onDelete, onEdit, onCance
           onClick={handleCloseModal}
         >
           <div
-            className="bg-white rounded-lg p-6 shadow-2xl w-[90%] max-w-2xl max-h-[80vh] overflow-auto transform transition-all border border-yellow-200"
+            className={`bg-white rounded-lg p-6 shadow-2xl w-[90%] max-w-2xl max-h-[80vh] overflow-auto transform transition-all border ${
+              pinned ? 'border-yellow-400 bg-gradient-to-br from-yellow-50 to-white' : 'border-yellow-200'
+            }`}
             onClick={(e) => e.stopPropagation()}
           >
             {isEditingLocal ? (
@@ -165,30 +192,45 @@ const Note = ({ id, title, text, createdAt, updatedAt, onDelete, onEdit, onCance
             ) : (
               // This view mode is now rarely used since we go directly to edit
               <>
-                <h2 className="text-2xl font-bold mb-4 break-words text-black">{title}</h2>
-                <p className="text-lg mb-6 break-words whitespace-pre-wrap text-black">{text}</p>
+                <h2 className={`text-2xl font-bold mb-4 break-words transition-colors duration-200 ${
+                  pinned ? 'text-yellow-800' : 'text-black'
+                }`}>{title}</h2>
+                <p className={`text-lg mb-6 break-words whitespace-pre-wrap transition-colors duration-200 ${
+                  pinned ? 'text-yellow-700' : 'text-black'
+                }`}>{text}</p>
                 <div className="flex items-center justify-between">
-                  <small className="text-black">
+                  <small className={`transition-colors duration-200 ${
+                    pinned ? 'text-yellow-600 font-medium' : 'text-black'
+                  }`}>
                     {getTimeDisplay()}
                   </small>
                   <div className="flex gap-4 items-center">
-                    <img
-                      src={pinned ? PinIconFilled : PinIcon}
-                      alt="PinIcon"
-                      className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform"
-                      onClick={() => onPin(id)}
-                      title={pinned ? "Unpin" : "Pin"}
-                    />
+                    <div className="relative">
+                      <img
+                        src={pinned ? PinIconFilled : PinIcon}
+                        alt="PinIcon"
+                        className={`w-6 h-6 cursor-pointer transition-all duration-300 ease-in-out ${
+                          pinned 
+                            ? 'scale-110 rotate-12 filter brightness-110 drop-shadow-md hover:scale-125 hover:rotate-[20deg]' 
+                            : 'hover:scale-110 hover:rotate-6'
+                        }`}
+                        onClick={handlePinClick}
+                        title={pinned ? "Unpin" : "Pin"}
+                      />
+                      {pinned && (
+                        <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full animate-ping"></div>
+                      )}
+                    </div>
                     <img
                       src={EditIcon}
                       alt="EditIcon"
-                      className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform"
+                      className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform duration-200"
                       onClick={() => setIsEditingLocal(true)}
                     />
                     <img
                       src={DeleteIcon}
                       alt="DeleteButton"
-                      className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform"
+                      className="w-6 h-6 cursor-pointer hover:scale-110 hover:filter hover:brightness-110 transition-all duration-200"
                       onClick={() => {
                         handleCloseModal();
                         onDelete(id);
