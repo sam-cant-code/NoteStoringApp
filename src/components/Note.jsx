@@ -103,35 +103,31 @@ const Note = ({ id, title, text, createdAt, updatedAt, onDelete, onEdit, onCance
   return (
     <>
       <div
-        className={`note bg-white rounded-xl p-4 shadow-lg flex flex-col w-full cursor-pointer transition-all duration-300 ease-in-out border ${
+        className={`note bg-white rounded-xl p-2 sm:p-4 shadow-lg flex flex-col w-full cursor-pointer transition-all duration-300 ease-in-out border ${
           pinned 
             ? 'border-yellow-400 bg-gradient-to-br from-yellow-50 to-white shadow-xl transform hover:scale-105 hover:shadow-2xl ring-2 ring-yellow-200 ring-opacity-50' 
             : 'border-yellow-200 hover:shadow-2xl hover:border-yellow-300 hover:bg-gradient-to-br hover:from-yellow-25 hover:to-white'
         } ${isPinAnimating ? 'animate-pulse scale-105' : ''}`}
         onClick={handleNoteClick}
       >
-        <h3 className={`note-text mb-1 break-words overflow-hidden font-bold text-center text-base leading-tight transition-colors duration-200 ${
+        <h3 className={`note-text mb-1 break-words overflow-hidden font-bold text-center text-sm sm:text-base leading-tight transition-colors duration-200 ${
           pinned ? 'text-yellow-800' : 'text-black'
         }`}>
           {title}
         </h3>
-        <span className={`note-text mb-4 break-words text-sm leading-snug whitespace-pre-wrap transition-colors duration-200 ${
+        <span className={`note-text mb-2 sm:mb-4 break-words text-xs sm:text-sm leading-snug whitespace-pre-wrap transition-colors duration-200 ${
           pinned ? 'text-yellow-700' : 'text-black'
         }`}>
           {text}
         </span>
-        <div className="footer flex items-center justify-between mt-auto pt-2">
-          <small className={`text-xs transition-colors duration-200 ${
-            pinned ? 'text-yellow-600 font-medium' : 'text-yellow-600'
-          }`}>
-            {getTimeDisplay()}
-          </small>
-          <div className="flex gap-2">
+        <div className="footer flex flex-col sm:flex-row sm:items-center sm:justify-between mt-auto pt-1 gap-2 sm:gap-0">
+          {/* Icons row - always at top on mobile, right side on desktop */}
+          <div className="flex gap-1 sm:gap-2 justify-end sm:justify-end order-1 sm:order-2">
             <div className="relative">
               <img
                 src={pinned ? PinIconFilled : PinIcon}
                 alt="PinIcon"
-                className={`w-5 h-5 cursor-pointer transition-all duration-300 ease-in-out ${
+                className={`w-4 h-4 sm:w-5 sm:h-5 cursor-pointer transition-all duration-300 ease-in-out ${
                   pinned 
                     ? 'scale-110 rotate-12 filter brightness-110 drop-shadow-md hover:scale-125 hover:rotate-[20deg]' 
                     : 'hover:scale-110 hover:rotate-6'
@@ -140,19 +136,19 @@ const Note = ({ id, title, text, createdAt, updatedAt, onDelete, onEdit, onCance
                 title={pinned ? "Unpin" : "Pin"}
               />
               {pinned && (
-                <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full animate-ping"></div>
+                <div className="absolute -top-1 -right-1 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-yellow-400 rounded-full animate-ping"></div>
               )}
             </div>
             <img
               src={EditIcon}
               alt="EditIcon"
-              className="w-5 h-5 cursor-pointer hover:scale-110 transition-transform duration-200"
+              className="w-4 h-4 sm:w-5 sm:h-5 cursor-pointer hover:scale-110 transition-transform duration-200"
               onClick={handleEditClick}
             />
             <img
               src={DeleteIcon}
               alt="DeleteButton"
-              className="w-5 h-5 cursor-pointer hover:scale-110 hover:filter hover:brightness-110 transition-all duration-200"
+              className="w-4 h-4 sm:w-5 sm:h-5 cursor-pointer hover:scale-110 hover:filter hover:brightness-110 transition-all duration-200"
               onClick={(e) => {
                 e.stopPropagation();
                 if (window.confirm("Are you sure you want to delete this note?")) {
@@ -161,6 +157,12 @@ const Note = ({ id, title, text, createdAt, updatedAt, onDelete, onEdit, onCance
               }}
             />
           </div>
+          {/* Time stamp - below icons on mobile, left side on desktop */}
+          <small className={`text-xs transition-colors duration-200 text-right sm:text-left order-2 sm:order-1 ${
+            pinned ? 'text-yellow-600 font-medium' : 'text-yellow-600'
+          }`}>
+            {getTimeDisplay()}
+          </small>
         </div>
       </div>
 
@@ -171,7 +173,7 @@ const Note = ({ id, title, text, createdAt, updatedAt, onDelete, onEdit, onCance
           onClick={handleCloseModal}
         >
           <div
-            className={`bg-white rounded-lg p-6 shadow-2xl w-[90%] max-w-2xl max-h-[80vh] overflow-auto transform transition-all border ${
+            className={`bg-white rounded-lg p-4 sm:p-6 shadow-2xl w-[95%] sm:w-[90%] max-w-2xl max-h-[80vh] overflow-auto transform transition-all border ${
               pinned ? 'border-yellow-400 bg-gradient-to-br from-yellow-50 to-white' : 'border-yellow-200'
             }`}
             onClick={(e) => e.stopPropagation()}
@@ -192,24 +194,24 @@ const Note = ({ id, title, text, createdAt, updatedAt, onDelete, onEdit, onCance
             ) : (
               // This view mode is now rarely used since we go directly to edit
               <>
-                <h2 className={`text-2xl font-bold mb-4 break-words transition-colors duration-200 ${
+                <h2 className={`text-xl sm:text-2xl font-bold mb-4 break-words transition-colors duration-200 ${
                   pinned ? 'text-yellow-800' : 'text-black'
                 }`}>{title}</h2>
-                <p className={`text-lg mb-6 break-words whitespace-pre-wrap transition-colors duration-200 ${
+                <p className={`text-base sm:text-lg mb-6 break-words whitespace-pre-wrap transition-colors duration-200 ${
                   pinned ? 'text-yellow-700' : 'text-black'
                 }`}>{text}</p>
-                <div className="flex items-center justify-between">
-                  <small className={`transition-colors duration-200 ${
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
+                  <small className={`transition-colors duration-200 order-2 sm:order-1 text-right sm:text-left ${
                     pinned ? 'text-yellow-600 font-medium' : 'text-black'
                   }`}>
                     {getTimeDisplay()}
                   </small>
-                  <div className="flex gap-4 items-center">
+                  <div className="flex gap-3 sm:gap-4 items-center justify-end sm:justify-start order-1 sm:order-2">
                     <div className="relative">
                       <img
                         src={pinned ? PinIconFilled : PinIcon}
                         alt="PinIcon"
-                        className={`w-6 h-6 cursor-pointer transition-all duration-300 ease-in-out ${
+                        className={`w-5 h-5 sm:w-6 sm:h-6 cursor-pointer transition-all duration-300 ease-in-out ${
                           pinned 
                             ? 'scale-110 rotate-12 filter brightness-110 drop-shadow-md hover:scale-125 hover:rotate-[20deg]' 
                             : 'hover:scale-110 hover:rotate-6'
@@ -224,13 +226,13 @@ const Note = ({ id, title, text, createdAt, updatedAt, onDelete, onEdit, onCance
                     <img
                       src={EditIcon}
                       alt="EditIcon"
-                      className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform duration-200"
+                      className="w-5 h-5 sm:w-6 sm:h-6 cursor-pointer hover:scale-110 transition-transform duration-200"
                       onClick={() => setIsEditingLocal(true)}
                     />
                     <img
                       src={DeleteIcon}
                       alt="DeleteButton"
-                      className="w-6 h-6 cursor-pointer hover:scale-110 hover:filter hover:brightness-110 transition-all duration-200"
+                      className="w-5 h-5 sm:w-6 sm:h-6 cursor-pointer hover:scale-110 hover:filter hover:brightness-110 transition-all duration-200"
                       onClick={() => {
                         handleCloseModal();
                         onDelete(id);

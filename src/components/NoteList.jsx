@@ -4,7 +4,7 @@ import AddNote from './AddNote';
 const NoteList = ({ notes, onSaveNote, onDeleteNote, onEditNote, onCancelEdit, onPinNote }) => {
   return (
     <div
-      className="note-list p-6 w-full h-[90vh] max-w-[1600px] mx-auto"
+      className="note-list p-3 sm:p-6 w-full h-[90vh] max-w-[1600px] mx-auto"
       style={{ width: '100%' }}
     >
       {notes.length === 0 ? (
@@ -15,16 +15,16 @@ const NoteList = ({ notes, onSaveNote, onDeleteNote, onEditNote, onCancelEdit, o
         </div>
       ) : (
         <div 
-          className="columns-2 md:columns-3 gap-4 md:gap-8 space-y-4 md:space-y-8"
+          className="columns-1 sm:columns-2 md:columns-3 gap-2 sm:gap-4 md:gap-8 space-y-2 sm:space-y-4 md:space-y-8"
           style={{
-            columnGap: '1rem',
+            columnGap: '0.5rem',
             columnFill: 'balance'
           }}
         >
           {notes.map(note =>
             // Only use AddNote for truly new notes (empty title and text)
             note.isEditing && !note.title && !note.text ? (
-              <div key={note.id} className="break-inside-avoid mb-4 md:mb-8">
+              <div key={note.id} className="break-inside-avoid mb-2 sm:mb-4 md:mb-8">
                 <AddNote
                   id={note.id}
                   initialTitle={note.title}
@@ -34,7 +34,7 @@ const NoteList = ({ notes, onSaveNote, onDeleteNote, onEditNote, onCancelEdit, o
                 />
               </div>
             ) : (
-              <div key={note.id} className="break-inside-avoid mb-4 md:mb-8">
+              <div key={note.id} className="break-inside-avoid mb-2 sm:mb-4 md:mb-8">
                 <Note
                   id={note.id}
                   title={note.title}

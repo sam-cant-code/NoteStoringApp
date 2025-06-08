@@ -232,43 +232,55 @@ function NotesPage() {
             </div>
           )}
 
-          {/* MOVED: Enhanced empty state with better responsive design - NOW IN THE MIDDLE */}
+          {/* Notes List with improved responsive spacing */}
+          <div className="pb-24 xs:pb-20 sm:pb-16 md:pb-12 lg:pb-8">
+            <NoteList
+              notes={sortedAndFilteredNotes}
+              onSaveNote={handleSaveNote}
+              onDeleteNote={handleDeleteNote}
+              onEditNote={handleEditNote}
+              onCancelEdit={handleCancelEdit}
+              onPinNote={handlePinNote}
+            />
+          </div>
+
+          {/* Enhanced empty state with better responsive design */}
           {!loading && sortedAndFilteredNotes.length === 0 && (
-            <div className="text-center py-12 xs:py-16 sm:py-20 md:py-24 px-3 xs:px-4">
+            <div className="text-center py-8 xs:py-10 sm:py-12 md:py-16 px-3 xs:px-4">
               <div className="max-w-sm mx-auto">
                 {search ? (
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {/* Search icon or illustration could go here */}
-                    <div className="text-5xl xs:text-6xl sm:text-7xl mb-6 grayscale">🔍</div>
-                    <h3 className="text-lg xs:text-xl sm:text-2xl font-semibold text-gray-600 mb-3">
+                    <div className="text-4xl xs:text-5xl sm:text-6xl mb-4">🔍</div>
+                    <h3 className="text-base xs:text-lg sm:text-xl font-semibold text-yellow-700 mb-2">
                       No notes found
                     </h3>
-                    <p className="text-gray-500 text-base xs:text-lg break-words px-2 mb-4">
+                    <p className="text-yellow-600/80 text-sm xs:text-base break-words px-2">
                       No notes match "<span className="font-medium">{search}</span>"
                     </p>
-                    <p className="text-gray-400 text-sm xs:text-base">
+                    <p className="text-yellow-600/60 text-xs xs:text-sm">
                       Try adjusting your search or{' '}
                       <button 
                         onClick={() => setSearch('')}
-                        className="text-gray-600 underline hover:text-gray-700 font-medium"
+                        className="text-yellow-700 underline hover:text-yellow-800 font-medium"
                       >
                         clear search
                       </button>
                     </p>
                   </div>
                 ) : (
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {/* Welcome illustration */}
-                    <div className="text-5xl xs:text-6xl sm:text-7xl mb-6 grayscale">📝</div>
-                    <h3 className="text-lg xs:text-xl sm:text-2xl font-bold text-gray-600 mb-3">
+                    <div className="text-4xl xs:text-5xl sm:text-6xl mb-4">📝</div>
+                    <h3 className="text-base xs:text-lg sm:text-xl font-semibold text-yellow-700 mb-2">
                       Start taking notes
                     </h3>
-                    <p className="text-gray-500 text-base xs:text-lg mb-6">
+                    <p className="text-yellow-600/80 text-sm xs:text-base mb-3">
                       Your notes will appear here
                     </p>
-                    <div className="flex items-center justify-center space-x-2 text-gray-400 text-sm xs:text-base">
+                    <div className="flex items-center justify-center space-x-2 text-yellow-600/60 text-xs xs:text-sm">
                       <span>Tap the</span>
-                      <div className="inline-flex items-center justify-center w-8 h-8 xs:w-9 xs:h-9 bg-gray-400 text-white rounded-full text-lg xs:text-xl font-bold shadow-md">
+                      <div className="inline-flex items-center justify-center w-6 h-6 xs:w-7 xs:h-7 bg-yellow-400 text-white rounded-full text-sm xs:text-base font-bold">
                         +
                       </div>
                       <span>button to create your first note</span>
@@ -276,20 +288,6 @@ function NotesPage() {
                   </div>
                 )}
               </div>
-            </div>
-          )}
-
-          {/* Notes List with improved responsive spacing - only shows when there are notes */}
-          {!loading && sortedAndFilteredNotes.length > 0 && (
-            <div className="pb-24 xs:pb-20 sm:pb-16 md:pb-12 lg:pb-8">
-              <NoteList
-                notes={sortedAndFilteredNotes}
-                onSaveNote={handleSaveNote}
-                onDeleteNote={handleDeleteNote}
-                onEditNote={handleEditNote}
-                onCancelEdit={handleCancelEdit}
-                onPinNote={handlePinNote}
-              />
             </div>
           )}
 

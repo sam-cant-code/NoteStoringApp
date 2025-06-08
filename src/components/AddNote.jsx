@@ -73,15 +73,15 @@ const AddNote = ({ id, onSave, onDelete, onCancel, initialTitle = '', initialTex
   if (!isVisible) return null;
 
   return (
-    <div className={`fixed inset-0 backdrop-blur-sm flex items-center justify-center p-4 z-50 transition-opacity duration-300 ${isAnimated ? 'opacity-100' : 'opacity-0'}`}>
+    <div className={`fixed inset-0 backdrop-blur-sm flex items-center justify-center p-2 sm:p-6 lg:p-8 z-50 transition-opacity duration-300 ${isAnimated ? 'opacity-100' : 'opacity-0'}`}>
       <div 
         ref={containerRef}
-        className={`bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] flex flex-col transition-all duration-300 ${isAnimated ? 'scale-100 translate-y-0' : 'scale-95 translate-y-4'}`}
+        className={`bg-white rounded-lg sm:rounded-xl shadow-xl w-full max-w-2xl lg:max-w-4xl xl:max-w-5xl h-full sm:h-auto sm:max-h-[90vh] lg:max-h-[85vh] flex flex-col transition-all duration-300 ${isAnimated ? 'scale-100 translate-y-0' : 'scale-95 translate-y-4'}`}
         onBlur={handleBlur}
       >
         
-        {/* Header */}
-        <div className="p-6 pb-4">
+        {/* Header - More compact on mobile */}
+        <div className="p-4 sm:p-6 lg:p-8 pb-3 sm:pb-4 lg:pb-6">
           <input
             ref={titleInputRef}
             type="text"
@@ -89,58 +89,67 @@ const AddNote = ({ id, onSave, onDelete, onCancel, initialTitle = '', initialTex
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Enter Title..."
             maxLength={50}
-            className="w-full text-xl font-semibold border-none outline-none bg-transparent placeholder-gray-400"
+            className="w-full text-lg sm:text-xl lg:text-2xl font-semibold border-none outline-none bg-transparent placeholder-gray-400"
           />
         </div>
         
         {/* Subtle divider after header */}
-        <div className="border-t border-gray-100 mx-6"></div>
+        <div className="border-t border-gray-100 mx-4 sm:mx-6 lg:mx-8"></div>
         
-        {/* Content area */}
-        <div className="flex-1 p-6 py-4">
+        {/* Content area - Flexible height on mobile */}
+        <div className="flex-1 p-4 sm:p-6 lg:p-8 py-3 sm:py-4 lg:py-6">
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Enter note content..."
             maxLength={200}
-            className="w-full h-64 resize-none border-none outline-none bg-transparent placeholder-gray-400 leading-relaxed"
+            className="w-full h-full min-h-[200px] sm:h-64 lg:h-80 xl:h-96 resize-none border-none outline-none bg-transparent placeholder-gray-400 leading-relaxed text-base lg:text-lg"
           />
         </div>
 
         {/* Subtle divider before bottom section */}
-        <div className="border-t border-gray-100 mx-6"></div>
+        <div className="border-t border-gray-100 mx-4 sm:mx-6 lg:mx-8"></div>
 
-        {/* Bottom section with buttons and character count */}
-        <div className="p-6 pt-4">
-          <div className="flex items-center justify-between">
-            <small className="text-gray-500 transition-colors duration-200">
+        {/* Bottom section with buttons and character count - Mobile-optimized layout */}
+        <div className="p-4 sm:p-6 lg:p-8 pt-3 sm:pt-4 lg:pt-6 safe-area-inset-bottom">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
+            
+            {/* Character count - Top on mobile, left on desktop */}
+            <small className="text-gray-500 transition-colors duration-200 text-center sm:text-left order-2 sm:order-1">
               {200 - text.length} characters remaining
             </small>
             
-            <div className="flex gap-3">
-              <button
-                type="submit"
-                onClick={handleSave}
-                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105 active:scale-95"
-              >
-                Save Changes
-              </button>
+            {/* Button group - Bottom on mobile, right on desktop */}
+            <div className="flex flex-col-reverse sm:flex-row gap-3 order-1 sm:order-2">
               
+              {/* Primary actions - Full width on mobile, grouped on desktop */}
+              <div className="flex gap-3">
+                <button
+                  type="submit"
+                  onClick={handleSave}
+                  className="flex-1 sm:flex-none px-4 py-3 sm:py-2 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white font-medium rounded-lg sm:rounded transition-all duration-200 shadow-sm hover:shadow-md transform active:scale-95 text-base sm:text-sm"
+                >
+                  Save Changes
+                </button>
+                
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  className="flex-1 sm:flex-none px-4 py-3 sm:py-2 bg-gray-200 hover:bg-gray-300 active:bg-gray-400 text-gray-700 font-medium rounded-lg sm:rounded transition-all duration-200 shadow-sm hover:shadow-md transform active:scale-95 text-base sm:text-sm"
+                >
+                  Cancel
+                </button>
+              </div>
+              
+              {/* Delete button - Prominent on mobile, compact on desktop */}
               <button
                 type="button"
-                onClick={handleCancel}
-                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium rounded transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105 active:scale-95"
-              >
-                Cancel
-              </button>
-              
-              <button
-                type="button"
-                className="w-6 h-6 text-red-500 hover:text-red-600 cursor-pointer transition-all duration-200 transform hover:scale-110 active:scale-95"
+                className="flex items-center justify-center gap-2 w-full sm:w-auto sm:h-8 px-4 py-3 sm:p-0 text-red-500 hover:text-red-600 active:text-red-700 hover:bg-red-50 sm:hover:bg-transparent rounded-lg sm:rounded-none cursor-pointer transition-all duration-200 transform active:scale-95 font-medium sm:font-normal border border-red-200 sm:border-none"
                 onClick={handleDelete}
                 title="Delete Note"
               >
-                🗑️
+                <span className="text-lg sm:text-base">🗑️</span>
+                <span className="sm:hidden">Delete Note</span>
               </button>
             </div>
           </div>
